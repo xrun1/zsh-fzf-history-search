@@ -35,6 +35,9 @@ fzf_history_search() {
   FC_ARGS="-l"
   CANDIDATE_LEADING_FIELDS=2
 
+  ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS=0
+  ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=0
+
   if (( ! $ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS )); then
     FC_ARGS+=" -n"
     ((CANDIDATE_LEADING_FIELDS--))
@@ -55,6 +58,8 @@ fzf_history_search() {
       history_cmd="$history_cmd | uniq"
     fi
   fi
+  history_cmd="$history_cmd | bat -l zsh --color always --plain"
+  ZSH_FZF_HISTORY_SEARCH_FZF_ARGS+=" --ansi"
 
   candidates=(${(f)"$(eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "$BUFFER")"})
   local ret=$?
